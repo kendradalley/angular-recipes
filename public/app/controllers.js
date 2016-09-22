@@ -40,26 +40,39 @@ angular.module('RecipeCtrls', ['RecipeServices'])
     });
   };
 }])
-.controller('NavCtrl', ['$scope', function($scope) {
+.controller('NavCtrl', ['$scope', 'Auth', function($scope, Auth) {
+  //allows to toggle back in forth with sign-in sign-out button in nav
+  $scope.Auth = Auth;
   $scope.logout = function() {
-    // to implement
+    //remove the token
+    Auth.removeToken();
+    console.log('My Token:', Auth.getToken());
   };
 }])
-.controller('SignupCtrl', ['$scope', function($scope) {
+.controller('SignupCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
   $scope.user = {
     email: '',
     password: ''
   };
   $scope.userSignup = function() {
-    // to implement
+    $http.post('/api/users', $scope.user).then(function success(res){
+      $state.go('home');
+    }, function error(res){
+      console.log(res);
+    })
   };
 }])
-.controller('LoginCtrl', ['$scope', function($scope) {
+.controller('LoginCtrl', ['$scope', '$http', '$state', 'Auth', function($scope, $http, $state, Auth) {
   $scope.user = {
     email: '',
     password: ''
   };
   $scope.userLogin = function() {
-    // to implement
+    $http.post('/api/auth', $scope.user).then(function success(res) {
+      Auth.saveToken(res.data.token);
+      $state.go('home');
+    }, function error(res){
+      console.log(res);
+    })
   };
 }]);

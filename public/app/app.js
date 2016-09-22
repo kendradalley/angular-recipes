@@ -4,7 +4,10 @@ app.config([
   '$stateProvider',
   '$urlRouterProvider',
   '$locationProvider',
-  function($stateProvider, $urlRouterProvider, $locationProvider) {
+  '$httpProvider', //intercept request from angular
+  function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+    $httpProvider.interceptors.push('AuthInterceptor');
+
     $urlRouterProvider.otherwise('/404');
 
     $stateProvider
